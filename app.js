@@ -42,6 +42,12 @@ function showMessage(message, error = true) {
   element.style.borderColor = error ? "var(--warning)" : "var(--success)";
 }
 
+function showRecordMessage(message, error = false) {
+  const element = $("#record-message");
+  element.textContent = message || "";
+  element.dataset.kind = message ? (error ? "error" : "success") : "";
+}
+
 function blobPathFromAzureUrl(url) {
   const parsed = new URL(url);
   if (!/\.blob\.core\.windows\.net$/i.test(parsed.hostname)) return null;
@@ -260,10 +266,12 @@ function updateRecordState(status) {
 }
 
 async function saveRecord(status, moveNext = false) {
+  showRecordMessage("");
   const record = collectForm(status);
   const error = validateRecord(record, status === "verified");
   if (error) {
     showMessage(error);
+    showRecordMessage(error, true);
     return false;
   }
   await putAnnotation(record);
@@ -273,16 +281,23 @@ async function saveRecord(status, moveNext = false) {
     state.currentAnnotation = record;
     state.dirty = false;
     updateRecordState(status);
-    showMessage(`紀錄已保存在此瀏覽器，但尚未同步至 Azure：${error.message}`);
+    const message = `紀錄已保存在此瀏覽器，但尚未同步至 Azure：${error.message}`;
+    showMessage(message);
+    showRecordMessage(message, true);
     await updateProgress();
     return false;
   }
   state.currentAnnotation = record;
   state.dirty = false;
   updateRecordState(status);
-  showMessage(status === "verified" ? "人工標註已確認並同步至 Azure。" : "紀錄已同步至 Azure。", false);
+  const message = status === "verified" ? "人工標註已確認並同步至 Azure。" : "紀錄已同步至 Azure。";
+  showMessage("", false);
+  showRecordMessage(message);
   await updateProgress();
-  if (moveNext && state.position < itemCount() - 1) await showItem(state.position + 1);
+  if (moveNext && state.position < itemCount() - 1) {
+    await showItem(state.position + 1);
+    showRecordMessage(message);
+  }
   return true;
 }
 
@@ -392,6 +407,7 @@ async function loadSuggestion(item) {
 
 async function showItem(position) {
   showMessage("");
+  showRecordMessage("");
   const bounded = Math.max(0, Math.min(itemCount() - 1, position));
   state.position = bounded;
   const item = await getItem(bounded);
@@ -580,7 +596,11 @@ function bindEvents() {
     const requested = Math.trunc(Number($("#jump-input").value));
     if (Number.isFinite(requested)) showItem(requested - 1);
   });
-  $("#annotation-form").addEventListener("input", () => { state.dirty = true; showMessage(""); });
+  $("#annotation-form").addEventListener("input", () => {
+    state.dirty = true;
+    showMessage("");
+    showRecordMessage("");
+  });
   $("#save-draft").addEventListener("click", () => saveRecord("draft"));
   $("#skip-record").addEventListener("click", () => saveRecord("skipped", true));
   $("#verify-record").addEventListener("click", () => saveRecord("verified", true));

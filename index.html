@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="歷史書籍插圖裁切圖的人工審核與分類介面。">
     <title>插圖標註工作室</title>
-    <link rel="stylesheet" href="styles.css?v=20260831.3">
+    <link rel="stylesheet" href="styles.css?v=20260831.4">
   </head>
   <body>
     <a class="skip-link" href="#annotation-form">跳至標註表單</a>
@@ -127,6 +127,7 @@
             <button id="skip-record" class="button quiet" type="button">略過</button>
             <button id="verify-record" class="button primary" type="button">確認並儲存</button>
           </div>
+          <p id="record-message" class="record-message" role="status" aria-live="polite"></p>
         </form>
       </section>
 
@@ -180,6 +181,6 @@
       <div id="neighbour-results" class="neighbour-results"></div>
     </dialog>
 
-    <script src="app.js?v=20260831.3" type="module"></script>
+    <script src="app.js?v=20260831.4" type="module"></script>
   </body>
 </html>

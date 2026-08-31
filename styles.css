@@ -132,6 +132,9 @@ h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
 .proposal-list { margin: 0 0 18px; padding-left: 20px; color: var(--muted); font-size: .78rem; }
 .proposal-list button { min-height: 30px; margin-left: 8px; padding: 3px 8px; color: var(--accent); background: transparent; border: 0; }
 .record-actions { display: flex; justify-content: end; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
+.record-message { min-height: 1.5em; margin: 10px 0 0; text-align: right; color: var(--muted); font-size: .78rem; font-weight: 650; }
+.record-message[data-kind="success"] { color: var(--success); }
+.record-message[data-kind="error"] { color: var(--accent-dark); }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 9px 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line-dark); font-size: .77rem; font-weight: 750; text-decoration: none; transition: color 180ms ease, background 180ms ease; }
 .button:hover { color: white; background: var(--ink); }
 .button.primary { color: white; background: var(--accent); border-color: var(--accent); }
