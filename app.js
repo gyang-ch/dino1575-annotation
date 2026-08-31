@@ -103,6 +103,19 @@ const getAnnotation = (cropId) => dbRequest("readonly", (store) => store.get(cro
 const putAnnotation = (record) => dbRequest("readwrite", (store) => store.put(record));
 const allAnnotations = () => dbRequest("readonly", (store) => store.getAll());
 
+async function firstUnannotatedPosition() {
+  const records = await allAnnotations();
+  const completedRows = new Set(
+    records
+      .filter((record) => record.review_status === "verified" || record.review_status === "skipped")
+      .map((record) => Number(record.row_index)),
+  );
+  for (let position = 0; position < itemCount(); position += 1) {
+    if (!completedRows.has(position)) return position;
+  }
+  return Math.max(0, itemCount() - 1);
+}
+
 function taxonomyLabels(axis) {
   return state.taxonomy.axes[axis].groups.flatMap((group) => group.labels);
 }
@@ -675,8 +688,8 @@ async function initialise() {
     renderTaxonomy();
     bindEvents();
     await updateProgress();
-    const match = location.hash.match(/^#item=(\d+)$/);
-    await showItem(match ? Number(match[1]) - 1 : 0);
+    const startPosition = await firstUnannotatedPosition();
+    await showItem(startPosition);
   } catch (error) {
     showMessage(error.message);
     console.error(error);
