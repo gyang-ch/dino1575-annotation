@@ -73,7 +73,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   border-left: 1px solid var(--line-dark);
   box-shadow: -20px 0 70px rgb(40 34 25 / 18%);
 }
-.settings-heading, .annotation-heading, .assistance-heading, .card-heading, .dialog-heading { display: flex; align-items: start; justify-content: space-between; gap: 24px; }
+.settings-heading, .annotation-heading, .gemma-heading, .neighbour-heading { display: flex; align-items: start; justify-content: space-between; gap: 24px; }
 h2, h3, p { margin-top: 0; }
 h2 { margin-bottom: 0; font: 400 clamp(1.7rem, 3vw, 2.7rem)/1 var(--serif); letter-spacing: -.025em; }
 h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
@@ -116,14 +116,23 @@ h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
 .option label { display: flex; align-items: center; min-height: 44px; padding: 9px 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); font-size: .78rem; font-weight: 650; transition: background 180ms ease, border-color 180ms ease, color 180ms ease; }
 .option input:checked + label { color: white; background: var(--ink); border-color: var(--ink); }
 .option input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.option label.gemma-suggested { color: #214d2d; background: #e1f1e3; border-color: #6f9c78; box-shadow: inset 0 0 0 1px #6f9c78; }
+.option label.gemma-suggested::after { content: "Gemma"; margin-left: auto; padding-left: 8px; color: #356143; font-size: .58rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.option input:checked + label.gemma-suggested { color: white; background: #356143; border-color: #356143; }
+.option input:checked + label.gemma-suggested::after { color: #dff1e3; }
 .chip-options { display: flex; flex-wrap: wrap; gap: 7px; }
 .chip-options .option label { min-height: 40px; border-radius: 999px; }
 .field { display: grid; gap: 7px; color: var(--ink); font-size: .75rem; font-weight: 750; letter-spacing: .025em; }
 .field small { color: var(--muted); font-size: .7rem; font-weight: 500; letter-spacing: 0; }
 .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 0; }
 .field textarea { min-height: 86px; resize: vertical; line-height: 1.5; }
-.description-field { margin-top: 30px; font-family: var(--serif); font-size: 1rem; }
-.description-field textarea { font-family: var(--sans); font-size: .88rem; }
+.gemma-inline { margin: 28px 0 4px; padding: 18px; background: #f1eee7; border: 1px solid var(--line); }
+.gemma-inline.available { background: #edf6ed; border-color: #86a98c; }
+.gemma-heading { align-items: center; }
+.gemma-heading h3 { font-size: 1.18rem; }
+.gemma-heading span { color: var(--muted); font-size: .68rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+.gemma-legend { margin: 8px 0 0; color: var(--muted); font-size: .72rem; }
+.gemma-content > p { margin: 12px 0 0; color: var(--muted); font-size: .78rem; }
 .proposal { margin: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .proposal summary { padding: 14px 0; font-size: .78rem; font-weight: 750; }
 .proposal-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 13px; padding: 5px 0 18px; }
@@ -141,19 +150,13 @@ h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
 .button.primary:hover { background: var(--accent-dark); }
 .button.quiet { border-color: transparent; }
 
-.assistance { padding: 80px 0 0; }
-.assistance-heading { align-items: end; padding-bottom: 18px; border-bottom: 1px solid var(--line-dark); }
-.assistance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding-top: 18px; }
-.suggestion-card, .neighbour-card { min-height: 220px; padding: 24px; background: rgb(250 247 240 / 72%); border: 1px solid var(--line); }
-.card-heading span { color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
-.concealed { display: grid; place-content: center; justify-items: center; min-height: 130px; text-align: center; }
-.concealed p, .neighbour-card > p { color: var(--muted); }
-.suggestion-detail { margin-top: 18px; }
+.suggestion-detail { display: grid; grid-template-columns: minmax(100px, .35fr) 1fr; gap: 6px 14px; margin: 14px 0 0; }
 .suggestion-detail dt { color: var(--muted); font-size: .66rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-.suggestion-detail dd { margin: 3px 0 13px; }
+.suggestion-detail dd { margin: 0; font-size: .78rem; }
 
-.neighbour-dialog { width: min(1380px, calc(100% - 32px)); max-height: calc(100vh - 32px); padding: 28px; color: var(--ink); background: var(--surface-strong); border: 1px solid var(--line-dark); box-shadow: 0 30px 100px rgb(30 25 20 / 30%); }
-.neighbour-dialog::backdrop { background: rgb(35 30 25 / 66%); backdrop-filter: blur(4px); }
+.neighbour-section { margin-top: 34px; padding: clamp(22px, 3vw, 38px); background: var(--surface-strong); border: 1px solid var(--line-dark); box-shadow: var(--shadow); }
+.neighbour-heading { align-items: end; }
+.neighbour-heading > span { color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
 .neighbour-controls { display: flex; align-items: end; flex-wrap: wrap; gap: 14px 22px; margin: 24px 0; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .neighbour-controls label { display: grid; gap: 5px; color: var(--muted); font-size: .7rem; font-weight: 750; text-transform: uppercase; }
 .neighbour-controls select { padding: 7px 10px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); text-transform: none; }
@@ -172,6 +175,8 @@ h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
 @media (hover: hover) {
   .option label:hover { color: var(--ink); background: #e9e1d3; border-color: var(--line-dark); }
   .option input:checked + label:hover { color: white; background: var(--accent-dark); border-color: var(--accent-dark); }
+  .option label.gemma-suggested:hover { color: #173b21; background: #cfe7d2; border-color: #4d7e58; }
+  .option input:checked + label.gemma-suggested:hover { color: white; background: #284f33; border-color: #284f33; }
   .sequence-button:not(:disabled):hover { color: var(--accent); }
   .jump-form button:hover, .model-tabs button:hover { color: white; background: var(--ink); }
   .neighbour-item button:hover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
@@ -197,8 +202,7 @@ h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
   .segmented-options { grid-template-columns: 1fr; }
   .proposal-grid { grid-template-columns: 1fr; }
   .proposal-grid .full { grid-column: auto; }
-  .assistance-heading { align-items: start; flex-direction: column; }
-  .assistance-grid { grid-template-columns: 1fr; }
+  .suggestion-detail { grid-template-columns: 1fr; }
   .neighbour-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .neighbour-item button { height: 150px; }
 }

@@ -386,8 +386,9 @@ function renderImage(item) {
 
 async function loadSuggestion(item) {
   state.gemmaVisible = false;
-  $("#gemma-content").hidden = true;
-  $("#gemma-hidden").hidden = false;
+  clearGemmaHighlights();
+  $("#gemma-availability").textContent = "正在載入";
+  $("#gemma-content").replaceChildren();
   let suggestion = item.gemma_suggestion || await getAuxiliaryRecord("suggestion", item.row_index);
   if (!suggestion && state.config.suggestion_url_template) {
     const prefix = item.crop_id.replace(/^d1575_/, "").slice(0, 2);
@@ -399,10 +400,7 @@ async function loadSuggestion(item) {
     }
   }
   state.currentSuggestion = suggestion;
-  $("#gemma-availability").textContent = suggestion ? "已有建議" : "尚無建議";
-  $("#reveal-gemma").disabled = !suggestion;
-  if (!suggestion) $("#reveal-gemma").textContent = "尚無建議";
-  else $("#reveal-gemma").textContent = "顯示建議";
+  renderGemmaSuggestion(suggestion);
 }
 
 async function showItem(position) {
@@ -418,6 +416,11 @@ async function showItem(position) {
   renderImage(item);
   fillForm(state.currentAnnotation);
   await loadSuggestion(item);
+  renderNeighbours().catch((error) => {
+    if (state.currentItem?.crop_id === item.crop_id) {
+      $("#neighbour-message").textContent = `無法載入最近鄰圖像：${error.message}`;
+    }
+  });
   history.replaceState(null, "", `#item=${bounded + 1}`);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -442,17 +445,36 @@ function closeSettings() {
   $("#settings-button").focus();
 }
 
-function revealGemma() {
-  const record = state.currentSuggestion;
-  if (!record) return;
+function clearGemmaHighlights() {
+  $$(".option label.gemma-suggested").forEach((label) => label.classList.remove("gemma-suggested"));
+}
+
+function highlightGemmaChoices(name, ids) {
+  (ids || []).forEach((id) => {
+    const input = document.getElementById(`${name}-${id}`);
+    if (input?.nextElementSibling) input.nextElementSibling.classList.add("gemma-suggested");
+  });
+}
+
+function renderGemmaSuggestion(record) {
+  const content = $("#gemma-content");
+  content.replaceChildren();
+  if (!record) {
+    $("#gemma-inline").classList.remove("available");
+    $("#gemma-availability").textContent = "尚無建議";
+    const message = document.createElement("p");
+    message.textContent = "此插圖目前尚無模型建議。";
+    content.append(message);
+    return;
+  }
   const prediction = record.prediction || record;
+  $("#gemma-inline").classList.add("available");
+  $("#gemma-availability").textContent = "已有建議";
   state.gemmaVisible = true;
   state.currentAnnotation.assistance.gemma_suggestion_visible = true;
-  state.dirty = true;
-  $("#gemma-hidden").hidden = true;
-  const content = $("#gemma-content");
-  content.hidden = false;
-  content.replaceChildren();
+  highlightGemmaChoices("subject_form", prediction.subject_form_labels);
+  highlightGemmaChoices("domain", prediction.domain_labels);
+  highlightGemmaChoices("disposition", [prediction.disposition]);
   const definition = document.createElement("dl");
   definition.className = "suggestion-detail";
   const subjectNames = (prediction.subject_form_labels || []).map((id) => {
@@ -493,12 +515,14 @@ function neighbourArrays(record, setName) {
 }
 
 async function renderNeighbours() {
+  const requestedCropId = state.currentItem.crop_id;
   const message = $("#neighbour-message");
   const results = $("#neighbour-results");
   message.textContent = "正在載入近鄰紀錄…";
   results.replaceChildren();
   const inline = state.currentItem.neighbours?.[state.neighbourModel];
   const record = inline || await getAuxiliaryRecord("neighbours", state.currentItem.row_index, state.neighbourModel);
+  if (state.currentItem.crop_id !== requestedCropId) return;
   if (!record) {
     message.textContent = "此預覽尚未設定近鄰網頁資料分片。請使用套件內的準備程式產生並上傳資料。";
     return;
@@ -513,6 +537,7 @@ async function renderNeighbours() {
   const count = Math.min(limit, indices.length);
   message.textContent = `正在顯示 ${count} 筆 ${state.neighbourModel === "dinov2" ? "DINOv2" : "OpenCLIP"} 近鄰圖像。`;
   const neighbours = await Promise.all(indices.slice(0, count).map((row) => getItem(Number(row))));
+  if (state.currentItem.crop_id !== requestedCropId) return;
   neighbours.forEach((item, index) => {
     const figure = document.createElement("figure");
     figure.className = "neighbour-item";
@@ -528,7 +553,6 @@ async function renderNeighbours() {
       const opened = state.currentAnnotation.assistance.neighbour_crop_ids_opened;
       if (!opened.includes(item.crop_id)) opened.push(item.crop_id);
       state.dirty = true;
-      $("#neighbour-dialog").close();
       await showItem(item.row_index);
     });
     const caption = document.createElement("figcaption");
@@ -536,15 +560,6 @@ async function renderNeighbours() {
     figure.append(button, caption);
     results.append(figure);
   });
-}
-
-async function openNeighbours() {
-  if (!state.currentAnnotation.assistance.neighbour_panels_opened.includes(state.neighbourModel)) {
-    state.currentAnnotation.assistance.neighbour_panels_opened.push(state.neighbourModel);
-  }
-  state.dirty = true;
-  $("#neighbour-dialog").showModal();
-  await renderNeighbours();
 }
 
 async function exportAnnotations() {
@@ -620,9 +635,6 @@ function bindEvents() {
     state.dirty = true;
     renderProposals();
   });
-  $("#reveal-gemma").addEventListener("click", revealGemma);
-  $("#load-neighbours").addEventListener("click", openNeighbours);
-  $("#close-neighbours").addEventListener("click", () => $("#neighbour-dialog").close());
   $$(".model-tabs button").forEach((button) => button.addEventListener("click", async () => {
     state.neighbourModel = button.dataset.model;
     $$(".model-tabs button").forEach((candidate) => candidate.classList.toggle("active", candidate === button));
