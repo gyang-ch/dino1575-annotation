@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="歷史書籍插圖裁切圖的人工審核與分類介面。">
+    <title>插圖標註工作室</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#annotation-form">跳至標註表單</a>
+    <header class="masthead">
+      <div class="identity">
+        <p class="kicker">DINO-1575 插圖語料庫</p>
+        <h1>插圖標註工作室</h1>
+      </div>
+      <div class="progress-summary" aria-live="polite">
+        <span id="progress-count">已審核 0 筆</span>
+        <div class="progress-track" aria-hidden="true"><i id="progress-bar"></i></div>
+        <span id="position-count">0 / 0</span>
+      </div>
+      <button id="settings-button" class="icon-button" type="button" aria-label="開啟資料管理" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6"/></svg>
+      </button>
+    </header>
+
+    <aside id="settings" class="settings" hidden aria-labelledby="settings-title">
+      <div class="settings-heading">
+        <div><p class="kicker">人工標註紀錄</p><h2 id="settings-title">資料管理</h2></div>
+        <button id="settings-close" class="icon-button" type="button" aria-label="關閉設定">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="transfer-actions">
+        <button id="export-button" class="button" type="button">匯出人工標註</button>
+        <label class="button secondary" for="import-file">匯入標註</label>
+        <input id="import-file" class="visually-hidden" type="file" accept=".jsonl,.ndjson,application/x-ndjson">
+      </div>
+      <p id="storage-status" class="status-note" role="status"></p>
+    </aside>
+
+    <main id="workspace" class="workspace">
+      <nav class="sequence" aria-label="插圖順序導覽">
+        <button id="previous-item" class="sequence-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          <span>上一筆</span>
+        </button>
+        <form id="jump-form" class="jump-form">
+          <label for="jump-input">跳至第</label>
+          <input id="jump-input" type="number" min="1" step="1" inputmode="numeric">
+          <button type="submit">前往</button>
+        </form>
+        <button id="next-item" class="sequence-button" type="button">
+          <span>下一筆</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </nav>
+
+      <div id="app-message" class="notice" hidden role="alert"></div>
+
+      <section class="plate" aria-labelledby="crop-heading">
+        <div class="image-stage">
+          <div class="image-frame">
+            <img id="crop-image" alt="目前選取的歷史書籍插圖裁切圖">
+            <div id="image-placeholder" class="image-placeholder" hidden>
+              <p>無法載入裁切圖。</p>
+            </div>
+          </div>
+          <div class="crop-caption">
+            <div>
+              <p id="source-label" class="kicker">來源</p>
+              <h2 id="crop-heading">正在載入插圖…</h2>
+            </div>
+            <dl class="crop-facts">
+              <div><dt>偵測信心度</dt><dd id="confidence-value">–</dd></div>
+              <div><dt>資料列</dt><dd id="row-value">–</dd></div>
+              <div><dt>書籍</dt><dd id="book-value">–</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <form id="annotation-form" class="annotation-panel">
+          <div class="annotation-heading">
+            <div><p class="kicker">人工標註紀錄</p><h2>分類此裁切圖</h2></div>
+            <span id="record-state" class="record-state">尚未開始</span>
+          </div>
+
+          <fieldset id="disposition-fieldset" class="field-group">
+            <legend>處理決定 <span>選擇一項</span></legend>
+            <div id="disposition-options" class="segmented-options"></div>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend>Subject / form（主題／形式）<span>可複選</span></legend>
+            <div id="subject-options" class="chip-options"></div>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend>Domain（領域）<span>可複選</span></legend>
+            <div id="domain-options" class="chip-options"></div>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend>品質標記 <span>選填</span></legend>
+            <div id="quality-options" class="chip-options"></div>
+          </fieldset>
+
+          <label class="field description-field">簡短描述
+            <textarea id="description" rows="3" maxlength="1000" placeholder="請以一句繁體中文客觀描述可見內容。"></textarea>
+          </label>
+
+          <details class="proposal">
+            <summary>建議新增分類標籤</summary>
+            <div class="proposal-grid">
+              <label class="field">分類軸
+                <select id="proposal-axis"><option value="subject_form">Subject / form（主題／形式）</option><option value="domain">Domain（領域）</option></select>
+              </label>
+              <label class="field">建議名稱<input id="proposal-name" maxlength="120"></label>
+              <label class="field full">為何需要此標籤？<textarea id="proposal-reason" rows="2" maxlength="1000"></textarea></label>
+              <button id="add-proposal" class="button secondary" type="button">加入建議</button>
+            </div>
+            <ul id="proposal-list" class="proposal-list"></ul>
+          </details>
+
+          <label class="field">標註者備註
+            <textarea id="annotator-note" rows="2" maxlength="2000" placeholder="可記錄歧義、背景資訊或需要進一步審核之處。"></textarea>
+          </label>
+
+          <div class="record-actions">
+            <button id="save-draft" class="button secondary" type="button">儲存草稿</button>
+            <button id="skip-record" class="button quiet" type="button">略過</button>
+            <button id="verify-record" class="button primary" type="button">確認並儲存</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="assistance" aria-labelledby="assistance-title">
+        <div class="assistance-heading">
+          <h2 id="assistance-title">輔助資訊</h2>
+        </div>
+
+        <div class="assistance-grid">
+          <article class="suggestion-card">
+            <div class="card-heading"><h3>Gemma 建議</h3><span id="gemma-availability">尚未載入</span></div>
+            <div id="gemma-hidden" class="concealed">
+              <button id="reveal-gemma" class="button secondary" type="button">顯示建議</button>
+            </div>
+            <div id="gemma-content" hidden></div>
+          </article>
+
+          <article class="neighbour-card">
+            <div class="card-heading"><h3>最近鄰圖像</h3><span>OpenCLIP + DINOv2</span></div>
+            <button id="load-neighbours" class="button secondary" type="button">開啟近鄰面板</button>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="neighbour-dialog" class="neighbour-dialog" aria-labelledby="neighbour-title">
+      <div class="dialog-heading">
+        <div><p class="kicker">檢索參考</p><h2 id="neighbour-title">最近鄰圖像</h2></div>
+        <button id="close-neighbours" class="icon-button" type="button" aria-label="關閉近鄰面板">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="neighbour-controls">
+        <div role="group" aria-label="嵌入模型" class="model-tabs">
+          <button class="active" data-model="dinov2" type="button">DINOv2</button>
+          <button data-model="openclip" type="button">OpenCLIP</button>
+        </div>
+        <label>近鄰集合
+          <select id="neighbour-set">
+            <option value="cross_source">跨圖書館前 50 名</option>
+            <option value="cross_book">跨書籍前 50 名</option>
+            <option value="unrestricted">不設限制前 50 名</option>
+            <option value="candidate_pool">前 200 名候選集合</option>
+          </select>
+        </label>
+        <label>顯示數量
+          <select id="neighbour-limit"><option>12</option><option selected>20</option><option>30</option><option>50</option></select>
+        </label>
+      </div>
+      <p id="neighbour-message" class="status-note"></p>
+      <div id="neighbour-results" class="neighbour-results"></div>
+    </dialog>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

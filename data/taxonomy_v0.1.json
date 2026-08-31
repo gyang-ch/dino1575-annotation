@@ -1,0 +1,409 @@
+{
+  "taxonomy_id": "historical_book_illustrations",
+  "version": "0.1.0",
+  "status": "pilot",
+  "created": "2026-08-30",
+  "dataset_run_id": "20260829T190102Z_dino1575",
+  "principles": [
+    "Subject/form and domain are independent multi-label axes.",
+    "Choose only labels visibly supported by the crop or strongly supported by its bibliographic context.",
+    "Do not infer a specific species, person, place, or technical purpose unless the evidence supports it.",
+    "Other and uncertain are controlled labels, not substitutes for proposing a useful missing category.",
+    "New-label proposals are recorded without silently changing the controlled taxonomy."
+  ],
+  "axes": {
+    "subject_form": {
+      "name": "Subject / form",
+      "selection": "multiple",
+      "instruction": "Select every prominent depicted subject and every important visual form. Do not select incidental background details.",
+      "groups": [
+        {
+          "id": "natural_world",
+          "name": "Natural world",
+          "name_zh_hant": "自然世界",
+          "labels": [
+            {
+              "id": "plant",
+              "name": "Plant",
+              "name_zh_hant": "植物",
+              "definition": "A whole plant or recognisable botanical part, including flowers, fruit, leaves, roots, seeds, and trees.",
+              "include": ["botanical plate", "flower", "leaf", "tree", "fruit", "root"],
+              "exclude": ["purely decorative foliage with no botanical subject"],
+              "openclip_prompts": ["a historical botanical illustration of a plant", "an old book illustration of flowers leaves roots or trees"]
+            },
+            {
+              "id": "fungus",
+              "name": "Fungus",
+              "name_zh_hant": "真菌",
+              "definition": "A mushroom, mould, or other fungus shown as the principal subject.",
+              "include": ["mushroom plate", "fungal specimen"],
+              "exclude": ["plants without fungi"],
+              "openclip_prompts": ["a historical scientific illustration of mushrooms or fungi"]
+            },
+            {
+              "id": "animal",
+              "name": "Animal",
+              "name_zh_hant": "動物",
+              "definition": "A non-human animal, including mammals, birds, fish, reptiles, insects, shells, and other invertebrates.",
+              "include": ["bird", "fish", "insect", "mammal", "reptile", "shell"],
+              "exclude": ["human figures"],
+              "openclip_prompts": ["a historical zoological illustration of an animal", "an old natural history illustration of birds fish insects mammals or shells"]
+            },
+            {
+              "id": "landscape_geological_feature",
+              "name": "Landscape or geological feature",
+              "name_zh_hant": "風景或地質特徵",
+              "definition": "A landscape, seascape, mountain, rock formation, terrain, or geological section presented pictorially.",
+              "include": ["landscape view", "mountain", "coast", "rock formation"],
+              "exclude": ["maps where terrain is encoded cartographically"],
+              "openclip_prompts": ["a historical landscape illustration", "an old geological illustration of terrain or rock formations"]
+            }
+          ]
+        },
+        {
+          "id": "human",
+          "name": "Human subjects",
+          "name_zh_hant": "人物主題",
+          "labels": [
+            {
+              "id": "human_figure",
+              "name": "Human figure",
+              "name_zh_hant": "人物",
+              "definition": "One or more human figures where no more specific human label is necessary.",
+              "include": ["standing figure", "costume figure", "worker", "saint"],
+              "exclude": ["an isolated anatomical body part without a represented person"],
+              "openclip_prompts": ["a historical book illustration of a human figure"]
+            },
+            {
+              "id": "portrait",
+              "name": "Portrait",
+              "name_zh_hant": "肖像",
+              "definition": "A likeness focused on an identifiable or individualised person's face, head, bust, or body.",
+              "include": ["bust portrait", "profile portrait", "formal portrait"],
+              "exclude": ["generic figures in a narrative scene"],
+              "openclip_prompts": ["a historical engraved portrait of a person"]
+            },
+            {
+              "id": "human_group_activity",
+              "name": "Human group or activity",
+              "name_zh_hant": "人物群體或活動",
+              "definition": "People interacting, working, fighting, worshipping, travelling, or participating in a narrative or social scene.",
+              "include": ["battle scene", "work scene", "ceremony", "domestic activity"],
+              "exclude": ["a single static figure without a depicted activity"],
+              "openclip_prompts": ["a historical illustration of people performing an activity", "an old narrative scene with a group of people"]
+            },
+            {
+              "id": "anatomy_body_part",
+              "name": "Anatomy or body part",
+              "name_zh_hant": "解剖或身體部位",
+              "definition": "An anatomical body, organ, skeleton, bone, muscle, tooth, tissue, or pathological specimen.",
+              "include": ["anatomical plate", "skeleton", "organ", "bone", "tooth", "histology"],
+              "exclude": ["an ordinary portrait or clothed figure"],
+              "openclip_prompts": ["a historical medical anatomy illustration", "an old scientific illustration of organs bones muscles or body parts"]
+            }
+          ]
+        },
+        {
+          "id": "built_material_world",
+          "name": "Built and material world",
+          "name_zh_hant": "建成與物質世界",
+          "labels": [
+            {
+              "id": "architecture_built_environment",
+              "name": "Architecture or built environment",
+              "name_zh_hant": "建築或建成環境",
+              "definition": "A building, interior, monument, bridge, fortification, architectural elevation, detail, or built setting.",
+              "include": ["building", "architectural elevation", "column", "bridge", "fortification"],
+              "exclude": ["a purely cartographic street plan"],
+              "openclip_prompts": ["a historical architectural illustration of a building", "an old architectural elevation or detail"]
+            },
+            {
+              "id": "scientific_medical_instrument",
+              "name": "Scientific or medical instrument",
+              "name_zh_hant": "科學或醫療儀器",
+              "definition": "An instrument made for observation, measurement, experiment, diagnosis, or treatment.",
+              "include": ["microscope", "telescope", "surgical instrument", "measuring instrument"],
+              "exclude": ["general hand tools or complete machines"],
+              "openclip_prompts": ["a historical scientific instrument illustration", "an old medical or surgical instrument illustration"]
+            },
+            {
+              "id": "machine_mechanism",
+              "name": "Machine or mechanism",
+              "name_zh_hant": "機械或機構",
+              "definition": "A machine, engine, mechanical assembly, moving mechanism, or mechanical section.",
+              "include": ["engine", "gear mechanism", "pump", "mechanical device"],
+              "exclude": ["a single hand tool"],
+              "openclip_prompts": ["a historical technical illustration of a machine or mechanism"]
+            },
+            {
+              "id": "tool_weapon_implement",
+              "name": "Tool, weapon, or implement",
+              "name_zh_hant": "工具、武器或器具",
+              "definition": "A hand tool, weapon, agricultural implement, or comparable functional object.",
+              "include": ["weapon", "farm implement", "hand tool"],
+              "exclude": ["scientific measuring instruments", "large machines"],
+              "openclip_prompts": ["a historical illustration of tools weapons or implements"]
+            },
+            {
+              "id": "vessel_container",
+              "name": "Vessel or container",
+              "name_zh_hant": "器皿或容器",
+              "definition": "A vessel, bottle, jar, pot, box, or other container shown as a principal object.",
+              "include": ["ceramic vessel", "bottle", "jar", "container"],
+              "exclude": ["ships and boats", "containers incidental to a larger scene"],
+              "openclip_prompts": ["a historical illustration of a vessel bottle jar or container"]
+            },
+            {
+              "id": "artefact_material_object",
+              "name": "Artefact or material object",
+              "name_zh_hant": "人工製品或物質物件",
+              "definition": "A human-made object not better represented by architecture, instrument, machine, tool, weapon, or vessel.",
+              "include": ["furniture", "clothing", "ceremonial object", "archaeological artefact"],
+              "exclude": ["objects that have a more specific available label"],
+              "openclip_prompts": ["a historical illustration of an artefact or material object"]
+            }
+          ]
+        },
+        {
+          "id": "diagrammatic_forms",
+          "name": "Diagrammatic forms",
+          "name_zh_hant": "圖解形式",
+          "labels": [
+            {
+              "id": "map_plan",
+              "name": "Map or plan",
+              "name_zh_hant": "地圖或平面圖",
+              "definition": "A cartographic map, route, site plan, topographic plan, floor plan, or spatial diagram.",
+              "include": ["world map", "regional map", "route map", "site plan", "floor plan"],
+              "exclude": ["pictorial landscapes without spatial encoding"],
+              "openclip_prompts": ["a historical map or cartographic plan"]
+            },
+            {
+              "id": "astronomical_cosmological_diagram",
+              "name": "Astronomical or cosmological diagram",
+              "name_zh_hant": "天文或宇宙論圖解",
+              "definition": "A diagram of celestial objects, constellations, planetary systems, calendars, cosmology, or astrology.",
+              "include": ["star chart", "planetary diagram", "celestial sphere", "astrological diagram"],
+              "exclude": ["a pictorial night landscape"],
+              "openclip_prompts": ["a historical astronomical cosmological or astrological diagram"]
+            },
+            {
+              "id": "mathematical_geometric_diagram",
+              "name": "Mathematical or geometric diagram",
+              "name_zh_hant": "數學或幾何圖解",
+              "definition": "A geometric construction, mathematical figure, projection, proportion study, or abstract spatial proof.",
+              "include": ["geometric construction", "mathematical figure", "perspective construction"],
+              "exclude": ["architectural plans without mathematical emphasis"],
+              "openclip_prompts": ["a historical mathematical or geometric diagram"]
+            },
+            {
+              "id": "scientific_technical_diagram",
+              "name": "Scientific or technical diagram",
+              "name_zh_hant": "科學或技術圖解",
+              "definition": "A schematic, labelled explanatory diagram, section, process diagram, or technical construction not covered by another diagram label.",
+              "include": ["technical schematic", "labelled scientific figure", "cross-section", "process diagram"],
+              "exclude": ["unlabelled pictorial depictions"],
+              "openclip_prompts": ["a historical scientific or technical diagram"]
+            },
+            {
+              "id": "chart_table_tree",
+              "name": "Chart, table, or tree",
+              "name_zh_hant": "圖表、表格或樹狀圖",
+              "definition": "A data chart, graph, matrix, table, genealogy, branching tree, or node-link structure.",
+              "include": ["statistical chart", "table", "family tree", "node-link diagram"],
+              "exclude": ["ordinary prose arranged in columns"],
+              "openclip_prompts": ["a historical chart table genealogy or tree diagram"]
+            },
+            {
+              "id": "music_notation",
+              "name": "Music notation",
+              "name_zh_hant": "音樂記譜",
+              "definition": "Written musical notation, tablature, or a diagram whose main information is musical.",
+              "include": ["staff notation", "tablature", "musical score"],
+              "exclude": ["musical instruments without notation"],
+              "openclip_prompts": ["historical printed music notation or tablature"]
+            }
+          ]
+        },
+        {
+          "id": "symbolic_decorative_forms",
+          "name": "Symbolic and decorative forms",
+          "name_zh_hant": "象徵與裝飾形式",
+          "labels": [
+            {
+              "id": "heraldry_emblem",
+              "name": "Heraldry or emblem",
+              "name_zh_hant": "紋章或徽記",
+              "definition": "A coat of arms, heraldic device, emblem, insignia, or symbolic badge.",
+              "include": ["coat of arms", "emblem", "insignia"],
+              "exclude": ["ordinary decorative motifs without emblematic function"],
+              "openclip_prompts": ["a historical heraldic coat of arms or emblem"]
+            },
+            {
+              "id": "seal_coin_medal",
+              "name": "Seal, coin, or medal",
+              "name_zh_hant": "印章、錢幣或獎章",
+              "definition": "A seal impression, stamp, coin, medal, token, or comparable circular or impressed object.",
+              "include": ["seal", "stamp", "coin", "medal"],
+              "exclude": ["a generic circle in a diagram"],
+              "openclip_prompts": ["a historical illustration of a seal coin medal or stamp"]
+            },
+            {
+              "id": "ornament_pattern",
+              "name": "Ornament or pattern",
+              "name_zh_hant": "裝飾或紋樣",
+              "definition": "A decorative motif, repeating pattern, flourish, surface design, or ornamental composition.",
+              "include": ["decorative pattern", "flourish", "ornamental motif"],
+              "exclude": ["scientifically depicted plants used as the subject"],
+              "openclip_prompts": ["a historical decorative ornament or repeating pattern"]
+            },
+            {
+              "id": "initial_border_book_decoration",
+              "name": "Initial, border, or book decoration",
+              "name_zh_hant": "首字母、邊飾或書籍裝飾",
+              "definition": "A decorated initial, headpiece, tailpiece, border, printer's device, or page ornament tied to book layout.",
+              "include": ["illuminated initial", "decorative border", "headpiece", "tailpiece"],
+              "exclude": ["independent ornamental artefacts"],
+              "openclip_prompts": ["a historical decorated initial border headpiece or book ornament"]
+            },
+            {
+              "id": "mark_symbol_inscription",
+              "name": "Mark, symbol, or inscription",
+              "name_zh_hant": "標記、符號或題記",
+              "definition": "A symbol, glyph, monogram, short inscription, calligraphic mark, or isolated written sign treated visually.",
+              "include": ["symbol", "monogram", "glyph", "short inscription"],
+              "exclude": ["a full text block or ordinary prose"],
+              "openclip_prompts": ["a historical mark symbol glyph monogram or inscription"]
+            }
+          ]
+        },
+        {
+          "id": "fallback",
+          "name": "Fallback",
+          "name_zh_hant": "其他與不確定",
+          "labels": [
+            {
+              "id": "other_subject_form",
+              "name": "Other subject / form",
+              "name_zh_hant": "其他主題／形式",
+              "definition": "A visible subject or form that does not fit the controlled labels. Add a proposed label and note.",
+              "include": ["genuinely missing category"],
+              "exclude": ["cases where an existing label applies", "cases that are merely difficult to recognise"],
+              "openclip_prompts": []
+            },
+            {
+              "id": "uncertain_subject_form",
+              "name": "Uncertain subject / form",
+              "name_zh_hant": "不確定的主題／形式",
+              "definition": "The crop does not provide enough evidence to choose a subject/form label reliably.",
+              "include": ["ambiguous or illegible subject"],
+              "exclude": ["recognisable subjects covered by existing labels"],
+              "openclip_prompts": []
+            }
+          ]
+        }
+      ]
+    },
+    "domain": {
+      "name": "Domain",
+      "selection": "multiple",
+      "instruction": "Select every field of knowledge or practice substantially represented. A domain may be inferred from clear visual evidence or reliable book context, but not from similarity alone.",
+      "groups": [
+        {
+          "id": "natural_sciences",
+          "name": "Natural sciences",
+          "name_zh_hant": "自然科學",
+          "labels": [
+            {"id": "botany", "name": "Botany", "name_zh_hant": "植物學", "definition": "Study and description of plants and fungi.", "openclip_prompts": ["a historical botanical scientific illustration"]},
+            {"id": "zoology_natural_history", "name": "Zoology and natural history", "name_zh_hant": "動物學與自然史", "definition": "Study and description of animals and the natural world.", "openclip_prompts": ["a historical zoology or natural history illustration"]},
+            {"id": "geology_mineralogy", "name": "Geology and mineralogy", "name_zh_hant": "地質學與礦物學", "definition": "Earth materials, strata, fossils, minerals, and geological processes.", "openclip_prompts": ["a historical geology mineralogy or fossil illustration"]}
+          ]
+        },
+        {
+          "id": "health_medicine",
+          "name": "Health and medicine",
+          "name_zh_hant": "健康與醫學",
+          "labels": [
+            {"id": "medicine_anatomy", "name": "Medicine and anatomy", "name_zh_hant": "醫學與解剖學", "definition": "Human or animal health, anatomy, physiology, pathology, diagnosis, or treatment.", "openclip_prompts": ["a historical medical or anatomical illustration"]},
+            {"id": "surgery", "name": "Surgery", "name_zh_hant": "外科學", "definition": "Surgical procedures, operative anatomy, and surgical instruments.", "openclip_prompts": ["a historical surgical illustration"]},
+            {"id": "pharmacy_materia_medica", "name": "Pharmacy and materia medica", "name_zh_hant": "藥學與本草學", "definition": "Medicinal substances, pharmacology, remedies, and preparation of medicines.", "openclip_prompts": ["a historical pharmacy materia medica or medicinal plant illustration"]}
+          ]
+        },
+        {
+          "id": "land_and_food",
+          "name": "Land and food",
+          "name_zh_hant": "土地與食物",
+          "labels": [
+            {"id": "agriculture_horticulture", "name": "Agriculture and horticulture", "name_zh_hant": "農業與園藝", "definition": "Cultivation, farming, gardening, forestry, crops, livestock, and agricultural implements.", "openclip_prompts": ["a historical agriculture horticulture or farming illustration"]}
+          ]
+        },
+        {
+          "id": "formal_earth_sky",
+          "name": "Formal, earth, and sky knowledge",
+          "name_zh_hant": "形式、地球與天空知識",
+          "labels": [
+            {"id": "astronomy_astrology_cosmology", "name": "Astronomy, astrology, and cosmology", "name_zh_hant": "天文學、占星術與宇宙論", "definition": "Celestial observation, calendars, planetary systems, astrology, or models of the cosmos.", "openclip_prompts": ["a historical astronomy astrology or cosmology diagram"]},
+            {"id": "mathematics_geometry", "name": "Mathematics and geometry", "name_zh_hant": "數學與幾何學", "definition": "Arithmetic, geometry, proportion, measurement, and mathematical demonstration.", "openclip_prompts": ["a historical mathematics or geometry diagram"]},
+            {"id": "geography_cartography", "name": "Geography and cartography", "name_zh_hant": "地理學與製圖學", "definition": "Places, territories, routes, topography, spatial knowledge, and map-making.", "openclip_prompts": ["a historical geography or cartography illustration"]}
+          ]
+        },
+        {
+          "id": "applied_knowledge",
+          "name": "Applied knowledge",
+          "name_zh_hant": "應用知識",
+          "labels": [
+            {"id": "engineering_technology", "name": "Engineering and technology", "name_zh_hant": "工程與技術", "definition": "Machines, mechanisms, construction techniques, manufacturing, and applied technical knowledge.", "openclip_prompts": ["a historical engineering technology or machinery illustration"]},
+            {"id": "architecture_design", "name": "Architecture and design", "name_zh_hant": "建築與設計", "definition": "Building design, architectural theory, construction, interiors, and designed environments.", "openclip_prompts": ["a historical architecture or building design illustration"]},
+            {"id": "military_warfare", "name": "Military and warfare", "name_zh_hant": "軍事與戰爭", "definition": "War, armed forces, fortification, weapons, tactics, and military technology.", "openclip_prompts": ["a historical military warfare fortification or weapons illustration"]},
+            {"id": "navigation_maritime", "name": "Navigation and maritime knowledge", "name_zh_hant": "航海與海事知識", "definition": "Ships, sailing, navigation, nautical instruments, ports, and maritime practice.", "openclip_prompts": ["a historical navigation maritime or nautical illustration"]}
+          ]
+        },
+        {
+          "id": "humanities_society",
+          "name": "Humanities and society",
+          "name_zh_hant": "人文與社會",
+          "labels": [
+            {"id": "religion_mythology", "name": "Religion and mythology", "name_zh_hant": "宗教與神話", "definition": "Religious practice, sacred narratives, deities, saints, ritual, cosmological belief, and mythology.", "openclip_prompts": ["a historical religious sacred or mythological illustration"]},
+            {"id": "history_genealogy_heraldry", "name": "History, genealogy, and heraldry", "name_zh_hant": "歷史、譜系與紋章學", "definition": "Historical record, lineage, dynastic relations, coats of arms, commemoration, and antiquarian history.", "openclip_prompts": ["a historical genealogy heraldry or historical record illustration"]},
+            {"id": "literature_narrative", "name": "Literature and narrative", "name_zh_hant": "文學與敘事", "definition": "Literary works, drama, poetry, allegory, fiction, and narrative scenes.", "openclip_prompts": ["a historical literary or narrative book illustration"]},
+            {"id": "society_everyday_life", "name": "Society and everyday life", "name_zh_hant": "社會與日常生活", "definition": "Occupations, customs, dress, domestic life, leisure, social roles, and ordinary activities.", "openclip_prompts": ["a historical illustration of society customs or everyday life"]},
+            {"id": "art_ornament_material_culture", "name": "Art, ornament, and material culture", "name_zh_hant": "藝術、裝飾與物質文化", "definition": "Visual art, decorative design, craft, artefacts, collecting, and the study of material objects.", "openclip_prompts": ["a historical art ornament craft or material culture illustration"]},
+            {"id": "music", "name": "Music", "name_zh_hant": "音樂", "definition": "Musical notation, theory, instruments, performance, and musical practice.", "openclip_prompts": ["a historical music notation instrument or performance illustration"]}
+          ]
+        },
+        {
+          "id": "fallback",
+          "name": "Fallback",
+          "name_zh_hant": "其他與不確定",
+          "labels": [
+            {"id": "other_domain", "name": "Other domain", "name_zh_hant": "其他領域", "definition": "A clearly represented domain is absent from the controlled taxonomy. Add a proposed label and note.", "openclip_prompts": []},
+            {"id": "uncertain_domain", "name": "Uncertain domain", "name_zh_hant": "不確定的領域", "definition": "There is insufficient visual or contextual evidence to assign a domain reliably.", "openclip_prompts": []}
+          ]
+        }
+      ]
+    }
+  },
+  "disposition": {
+    "selection": "single",
+    "instruction": "Record whether this crop belongs in the illustration corpus before assigning content labels.",
+    "labels": [
+      {"id": "include", "name": "Include", "name_zh_hant": "納入", "definition": "A usable illustration, diagram, ornament, or other intentional graphic."},
+      {"id": "exclude_non_illustration", "name": "Exclude: not an illustration", "name_zh_hant": "排除：並非插圖", "definition": "A text block, blank region, scanning artefact, library mark, or other detector false positive."},
+      {"id": "exclude_unusable_crop", "name": "Exclude: unusable crop", "name_zh_hant": "排除：裁切不可用", "definition": "The underlying graphic may be valid, but this crop is too incomplete or poor to annotate."},
+      {"id": "uncertain_disposition", "name": "Uncertain", "name_zh_hant": "不確定", "definition": "The crop's inclusion status cannot yet be decided."}
+    ]
+  },
+  "quality_flags": {
+    "selection": "multiple_optional",
+    "labels": [
+      {"id": "partial_crop", "name": "Partial crop", "name_zh_hant": "裁切不完整", "definition": "A meaningful part of the graphic is cut off."},
+      {"id": "excessive_surrounding_text", "name": "Excessive surrounding text", "name_zh_hant": "周圍文字過多", "definition": "The crop includes substantial unrelated page text."},
+      {"id": "fragmented_composite", "name": "Fragmented or composite", "name_zh_hant": "碎片化或複合圖像", "definition": "The crop contains fragments or several graphics that cannot be treated as one coherent illustration."},
+      {"id": "low_resolution_blur", "name": "Low resolution or blur", "name_zh_hant": "低解析度或模糊", "definition": "Image quality materially impairs interpretation."},
+      {"id": "blank_low_information", "name": "Blank or low-information", "name_zh_hant": "空白或資訊量過低", "definition": "The crop contains too little visual information for useful annotation."},
+      {"id": "likely_duplicate", "name": "Likely duplicate", "name_zh_hant": "可能重複", "definition": "The same graphic probably occurs elsewhere in the dataset."},
+      {"id": "caption_or_title_only", "name": "Caption or title only", "name_zh_hant": "僅有圖說或標題", "definition": "The detected area is primarily a caption, label, or title without the associated graphic."},
+      {"id": "text_block_false_positive", "name": "Text-block false positive", "name_zh_hant": "文字區塊誤檢", "definition": "Ordinary prose or tabular text was detected as an illustration."}
+    ]
+  }
+}

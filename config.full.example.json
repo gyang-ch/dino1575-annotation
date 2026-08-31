@@ -1,0 +1,8 @@
+{
+  "app_schema_version": "dino1575_annotation_web_config_v1",
+  "mode": "full_corpus",
+  "run_id": "20260829T190102Z_dino1575",
+  "taxonomy_url": "data/taxonomy_v0.1.json",
+  "dataset_index_url": "data/dataset_index.json",
+  "suggestion_url_template": "/api/blob?path=derived%2Fillustration_similarity%2Fdino1575%2F20260829T190102Z_dino1575%2Fv1%2Fpreannotations%2Fgemma_v0.1%2Fby_prefix%2F{prefix}%2F{crop_id}.json"
+}
