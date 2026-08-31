@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 
 const CROP_ID = /^d1575_[0-9a-f]{24}$/;
 const VALID_STATUS = new Set(["draft", "verified", "skipped"]);
+const VALID_DISPOSITION = new Set(["include", "exclude_unusable_crop"]);
 
 function encodeBlobPath(blobPath) {
   return blobPath.split("/").map(encodeURIComponent).join("/");
@@ -18,6 +19,7 @@ function validateRecord(record, annotatorId) {
   if (!Number.isInteger(record.row_index) || record.row_index < 0) return "row_index 格式不正確。";
   if (record.annotator_id !== annotatorId) return "標註者 ID 與伺服器設定不符。";
   if (!VALID_STATUS.has(record.review_status)) return "review_status 不受支援。";
+  if (!VALID_DISPOSITION.has(record.disposition)) return "disposition 不受支援。";
   for (const key of ["subject_form_labels", "domain_labels", "quality_flags", "proposed_labels"]) {
     if (!Array.isArray(record[key])) return `${key} 必須是陣列。`;
   }
@@ -56,8 +58,8 @@ module.exports = async function handler(request, response) {
       "Content-Type": "application/json; charset=utf-8",
       "x-ms-blob-type": "BlockBlob",
       "x-ms-version": "2023-11-03",
-      "x-ms-meta-schema-version": record.schema_version,
-      "x-ms-meta-record-sha256": crypto.createHash("sha256").update(body).digest("hex"),
+      "x-ms-meta-schema_version": record.schema_version,
+      "x-ms-meta-record_sha256": crypto.createHash("sha256").update(body).digest("hex"),
     },
     body,
     signal: AbortSignal.timeout(30000),

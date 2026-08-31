@@ -166,6 +166,14 @@ h3 { margin-bottom: 0; font: 400 1.42rem/1.1 var(--serif); }
 .neighbour-item figcaption { padding-top: 6px; color: var(--muted); font-size: .7rem; overflow-wrap: anywhere; }
 .neighbour-item figcaption strong { color: var(--ink); }
 
+@media (hover: hover) {
+  .option label:hover { color: var(--ink); background: #e9e1d3; border-color: var(--line-dark); }
+  .option input:checked + label:hover { color: white; background: var(--accent-dark); border-color: var(--accent-dark); }
+  .sequence-button:not(:disabled):hover { color: var(--accent); }
+  .jump-form button:hover, .model-tabs button:hover { color: white; background: var(--ink); }
+  .neighbour-item button:hover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+}
+
 @media (max-width: 1120px) {
   .plate { grid-template-columns: 1fr; }
   .image-stage { position: static; }

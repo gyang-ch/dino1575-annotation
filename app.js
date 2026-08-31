@@ -30,6 +30,10 @@ const sourceNames = {
   rmda: "丹麥皇家圖書館",
   wellcome: "惠康典藏（Wellcome Collection）",
 };
+const humanDispositionLabels = [
+  { id: "include", name: "Normal", name_zh_hant: "正常" },
+  { id: "exclude_unusable_crop", name: "Unusable illustration", name_zh_hant: "不可用插圖" },
+];
 
 function showMessage(message, error = true) {
   const element = $("#app-message");
@@ -102,7 +106,7 @@ function validLabelSets() {
     subject_form: new Set(taxonomyLabels("subject_form").map((label) => label.id)),
     domain: new Set(taxonomyLabels("domain").map((label) => label.id)),
     quality: new Set(state.taxonomy.quality_flags.labels.map((label) => label.id)),
-    disposition: new Set(state.taxonomy.disposition.labels.map((label) => label.id)),
+    disposition: new Set(humanDispositionLabels.map((label) => label.id)),
   };
 }
 
@@ -129,7 +133,7 @@ function renderChoice(container, name, label, type) {
 
 function renderTaxonomy() {
   const disposition = $("#disposition-options");
-  state.taxonomy.disposition.labels.forEach((label) => renderChoice(disposition, "disposition", label, "radio"));
+  humanDispositionLabels.forEach((label) => renderChoice(disposition, "disposition", label, "radio"));
 
   for (const [axis, selector] of [["subject_form", "#subject-options"], ["domain", "#domain-options"]]) {
     const container = $(selector);
@@ -194,7 +198,7 @@ function emptyAnnotation(item) {
     taxonomy_version: state.taxonomy.version,
     annotator_id: state.runtime?.annotator_id || "",
     review_status: "draft",
-    disposition: "uncertain_disposition",
+    disposition: "include",
     subject_form_labels: [],
     domain_labels: [],
     quality_flags: [],
@@ -222,11 +226,11 @@ function collectForm(status) {
     ...previous,
     annotator_id: state.runtime?.annotator_id || previous.annotator_id,
     review_status: status,
-    disposition: selectedValues("disposition")[0] || "uncertain_disposition",
+    disposition: selectedValues("disposition")[0] || "include",
     subject_form_labels: selectedValues("subject_form"),
     domain_labels: selectedValues("domain"),
     quality_flags: selectedValues("quality_flags"),
-    description: $("#description").value.trim(),
+    description: "",
     description_language: "zh-Hant",
     annotator_note: $("#annotator-note").value.trim(),
     proposed_labels: [...state.proposals],
@@ -244,7 +248,6 @@ function validateRecord(record, final = false) {
   if (final && record.disposition === "include") {
     if (!record.subject_form_labels.length) return "確認納入的裁切圖至少需要一個主題／形式標籤。";
     if (!record.domain_labels.length) return "確認納入的裁切圖至少需要一個領域標籤；如有需要可選擇不確定。";
-    if (!record.description) return "確認納入的裁切圖需要一則簡短描述。";
   }
   return "";
 }
@@ -326,7 +329,6 @@ function fillForm(record) {
   setChecked("subject_form", record.subject_form_labels);
   setChecked("domain", record.domain_labels);
   setChecked("quality_flags", record.quality_flags);
-  $("#description").value = record.description || "";
   $("#annotator-note").value = record.annotator_note || "";
   state.proposals = [...(record.proposed_labels || [])];
   renderProposals();
