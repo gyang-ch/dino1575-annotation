@@ -264,13 +264,37 @@ async function saveRecord(status, moveNext = false) {
     return false;
   }
   await putAnnotation(record);
+  try {
+    await uploadAnnotation(record);
+  } catch (error) {
+    state.currentAnnotation = record;
+    state.dirty = false;
+    updateRecordState(status);
+    showMessage(`紀錄已保存在此瀏覽器，但尚未同步至 Azure：${error.message}`);
+    await updateProgress();
+    return false;
+  }
   state.currentAnnotation = record;
   state.dirty = false;
   updateRecordState(status);
-  showMessage(status === "verified" ? "人工標註已確認並儲存。" : "草稿已儲存在本機。", false);
+  showMessage(status === "verified" ? "人工標註已確認並同步至 Azure。" : "紀錄已同步至 Azure。", false);
   await updateProgress();
   if (moveNext && state.position < itemCount() - 1) await showItem(state.position + 1);
   return true;
+}
+
+async function uploadAnnotation(record) {
+  const response = await fetch("/api/annotation", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(record),
+  });
+  let result = {};
+  try { result = await response.json(); } catch { /* Preserve the HTTP error below. */ }
+  if (!response.ok) {
+    throw new Error(result.error || `伺服器回傳狀態碼 ${response.status}`);
+  }
+  return result;
 }
 
 function setChecked(name, values) {
@@ -360,7 +384,8 @@ async function loadSuggestion(item) {
   state.currentSuggestion = suggestion;
   $("#gemma-availability").textContent = suggestion ? "已有建議" : "尚無建議";
   $("#reveal-gemma").disabled = !suggestion;
-  $("#gemma-hidden p").textContent = suggestion ? "預設隱藏，以減少先入為主的影響。" : "目前尚未上傳此裁切圖的 Gemma 建議。";
+  if (!suggestion) $("#reveal-gemma").textContent = "尚無建議";
+  else $("#reveal-gemma").textContent = "顯示建議";
 }
 
 async function showItem(position) {
